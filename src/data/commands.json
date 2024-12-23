@@ -1,0 +1,11 @@
+[
+    { "id": 1, "text": "Transfer 0.01 CCIP-BnM to MODE TESTNET" },
+    { "id": 2, "text": "Swap 1 USDC to BNB with 5% slippage using Enso" },
+    { "id": 3, "text": "Swap 0.0001 BNB to USDC on BSC MAINNET network with 5% slippage" },
+    { "id": 4, "text": "Transfer 1 BNB to OPTIMISM" },
+    { "id": 5, "text": "Send 0.0001 ETH to 0x20613aBe93e4611Cf547b4395E4248c6129c8697" },
+    { "id": 6, "text": "Approve 0.001 BNB to 0x20613aBe93e4611Cf547b4395E4248c6129c8697" },
+    { "id": 7, "text": "Wrap 0.000001 BNB on BSC network" },
+    { "id": 8, "text": "Unwrap 0.000001 BNB on BSC network" }
+  ]
+  

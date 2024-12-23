@@ -1,0 +1,38 @@
+[
+    {
+      "id": 1,
+      "agentName": "SmartAI",
+      "tokenName": "SMART",
+      "tokenSupply": 1000000,
+      "agentPrompt": "This AI agent specializes in providing intelligent insights and automating complex tasks for users."
+    },
+    {
+      "id": 2,
+      "agentName": "QuickBot",
+      "tokenName": "QUICK",
+      "tokenSupply": 500000,
+      "agentPrompt": "QuickBot is designed for rapid response and efficient handling of real-time queries."
+    },
+    {
+      "id": 3,
+      "agentName": "SecureAI",
+      "tokenName": "SECURE",
+      "tokenSupply": 2000000,
+      "agentPrompt": "SecureAI focuses on providing robust security solutions for data protection and threat prevention."
+    },
+    {
+      "id": 4,
+      "agentName": "CreativeGen",
+      "tokenName": "CREATIVE",
+      "tokenSupply": 750000,
+      "agentPrompt": "CreativeGen excels in generating creative content, from text to images, tailored to user needs."
+    },
+    {
+      "id": 5,
+      "agentName": "DataMaster",
+      "tokenName": "DATA",
+      "tokenSupply": 1500000,
+      "agentPrompt": "DataMaster specializes in analyzing and visualizing complex datasets for actionable insights."
+    }
+  ]
+  

@@ -1,0 +1,40 @@
+{
+  "manifest_version": 3,
+  "name": "The X Agent",
+  "description": "The X Agent Made Easy!",
+  "version": "1.0",
+  
+  "permissions": [
+      "activeTab",
+  "storage",
+  "webRequest",
+  "sidePanel",
+  // "webRequestBlocking",
+  "tabs",
+  "webNavigation"
+  // "*://*/*"
+  ],
+ 
+  "side_panel": {
+    "default_path": "index.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "click to open panel"
+  },
+
+  "icons": {
+    "16": "sentiment-analysis.png",
+    "48": "sentiment-analysis.png",
+    "128": "sentiment-analysis.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ]
+}
