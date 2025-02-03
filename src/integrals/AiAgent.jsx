@@ -114,7 +114,7 @@ const AiAgent = () => {
 
 
 
-        <div className="w-full h-full overflow-y-auto custom-scrollbar">
+        <div className="w-full h-full ">
           <div className="bg-tab-color p-6 rounded-lg shadow-md text-center">
             <div className="flex flex-col gap-6 text-left">
               {/* <div><h2>walletAddress : {walletAddress}</h2></div> */}

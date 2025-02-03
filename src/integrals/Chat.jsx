@@ -79,7 +79,7 @@ const Chat = () => {
   }, [messages]); // Runs every time the messages array is updated
 
   return (
-    <div className="w-full bg-bg-color text-white p-4 flex flex-col h-[760px]">
+    <div className="w-full bg-bg-color text-white p-4 flex flex-col h-[700px]">
       {/* Chat title */}
       <div className="flex justify-center font-bold text-lg mb-4">Chat</div>
 
@@ -117,48 +117,8 @@ const Chat = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Commands Box */}
-      {showCommands && (
-        <div className="absolute bottom-32 left-4 right-4 bg-bg-color rounded-lg border border-gray-700 shadow-md max-h-60">
-          <div className="flex justify-between items-center px-4 py-2 bg-bg-color border-b-2 border-gray-700 rounded-t-lg">
-            <span className="font-bold text-white">Query Commands</span>
-            <span
-              className="cursor-pointer text-gray-400 hover:text-white"
-              onClick={() => setShowCommands(false)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </span>
-          </div>
-
-          <div className="p-4 max-h-[200px] overflow-y-auto scrollbar-thin">
-            {commandsList.map((command) => (
-              <div
-                key={command.id}
-                className="p-2 hover:bg-[#1A1A1A] cursor-pointer rounded"
-                onClick={() => handleCommandClick(command)}
-              >
-                {command.text}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Input and send button */}
-      <div className="relative flex items-center gap-2 mt-auto">
+      {/* Input moved above Commands Box */}
+      <div className="relative flex items-center gap-2 mb-4">
         <span
           onClick={() => setShowCommands((prev) => !prev)}
           className="cursor-pointer absolute left-3 text-gray-400"
@@ -204,6 +164,46 @@ const Chat = () => {
           </svg>
         </span>
       </div>
+
+      {/* Commands Box */}
+      {showCommands && (
+        <div className="absolute bottom-4 left-4 right-4 bg-bg-color rounded-lg border border-gray-700 shadow-md max-h-60">
+          <div className="flex justify-between items-center px-4 py-2 bg-bg-color border-b-2 border-gray-700 rounded-t-lg">
+            <span className="font-bold text-white">Query Commands</span>
+            <span
+              className="cursor-pointer text-gray-400 hover:text-white"
+              onClick={() => setShowCommands(false)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </span>
+          </div>
+
+          <div className="p-4 max-h-[200px] overflow-y-auto scrollbar-thin">
+            {commandsList.map((command) => (
+              <div
+                key={command.id}
+                className="p-2 hover:bg-[#1A1A1A] cursor-pointer rounded"
+                onClick={() => handleCommandClick(command)}
+              >
+                {command.text}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
