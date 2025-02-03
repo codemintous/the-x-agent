@@ -18432,6 +18432,179 @@ function doSomething() {
     console.log(parts.length);
     console.log(parts);
 
+    function waitForElement(selector, callback) {
+        const interval = setInterval(() => {
+            const element = document.querySelector(selector);
+            if (element) {
+                clearInterval(interval);
+                callback(element);
+            }
+        }, 500); // Retry every 500ms until the element is found
+    }
+
+    if (parts.length === 6) {
+        let text_twitter = document.getElementsByClassName("css-175oi2r r-1s2bzr4")[0]?.innerText;
+        console.log('Twitter text:', text_twitter);
+
+        let globalData1 = null;
+        let loadingInterval = null;
+
+        // Wait for the tweetTextarea_0 element to appear
+        waitForElement('div[data-testid="tweetTextarea_0"]', (targetElement) => {
+            if (!text_twitter) {
+                console.log('Tweet text does not exist');
+                const messageDiv = document.createElement('div');
+                messageDiv.innerText = 'Tweet text does not exist';
+                messageDiv.style.color = 'red';
+                messageDiv.style.marginTop = '10px';
+                messageDiv.style.fontSize = '14px';
+
+                targetElement.insertAdjacentElement('afterend', messageDiv);
+                return;
+            }
+
+            // Check if "uniqueResponse" div already exists
+            if (!document.getElementById("uniqueResponse")) {
+                const newDiv = document.createElement('div');
+
+                newDiv.id = "uniqueResponse";
+
+                // Create the button container
+                const buttonContainer = document.createElement("div");
+                buttonContainer.id = "customButtonsContainer";
+                buttonContainer.style.marginTop = "10px";
+                buttonContainer.style.display = "flex";
+                buttonContainer.style.gap = "8px";
+                buttonContainer.style.flexWrap = "wrap";
+
+                // Define button details
+                const buttons = [
+                    { emoji: "👍", text: "Positive", className: "custom-tone-positive" },
+                    { emoji: "👎", text: "Negative", className: "custom-tone-negative" },
+                    { emoji: "🤝", text: "Supportive", className: "custom-tone-supportive" },
+                    { emoji: "🎉", text: "Enthusiastic", className: "custom-tone-enthusiastic" },
+                    { emoji: "👏", text: "Encouraging", className: "custom-tone-encouraging" },
+                    { emoji: "🤗", text: "Empathetic", className: "custom-tone-empathetic" },
+                    { emoji: "🎊", text: "Congratulatory", className: "custom-tone-congratulatory" },
+                    { emoji: "🙌", text: "Appreciative", className: "custom-tone-appreciative" },
+                    { emoji: "ℹ️", text: "Informative", className: "custom-tone-informative" },
+                    { emoji: "🚀", text: "Motivational", className: "custom-tone-motivational" },
+                    { emoji: "🌟", text: "Inspirational", className: "custom-tone-inspirational" },
+                    { emoji: "🔥", text: "Viral", className: "custom-tone-viral" },
+                    { emoji: "👔", text: "Professional", className: "custom-tone-professional" },
+                    { emoji: "😊", text: "Friendly", className: "custom-tone-friendly" },
+                    { emoji: "🧘‍♀️", text: "Calm", className: "custom-tone-calm" },
+                    { emoji: "🙏", text: "Polite", className: "custom-tone-polite" },
+                    { emoji: "😂", text: "Humorous", className: "custom-tone-humorous" },
+                    { emoji: "💡", text: "Idea", className: "custom-tone-idea" },
+                    { emoji: "❓", text: "Questioning", className: "custom-tone-questioning" },
+                ];
+
+                // Create buttons
+                buttons.forEach(({ emoji, text, className }) => {
+                    const button = document.createElement("button");
+                    button.className = className;
+                    button.innerHTML = `<span>${emoji}</span> <span>${text}</span>`;
+                    button.style.padding = "6px 12px";
+                    button.style.color = " #1d9bef";
+                    button.style.border = "1px solid black";
+                    button.style.borderRadius = "5px";
+                    button.style.cursor = "pointer";
+                    button.style.backgroundColor = "#FFFFFF";
+                    button.style.fontSize = "14px";
+
+                    // Add the click event
+                    // Add this to your button click event handler
+                    button.onclick = () => {
+                        // Find the tweet text input container
+                        const tweetContainer = document.querySelector('div[data-testid="tweetTextarea_0RichTextInputContainer"]');
+                    
+                        if (tweetContainer) {
+                            // Find the placeholder and hide it
+                            const placeholder = tweetContainer.querySelector('.public-DraftEditorPlaceholder-root');
+                            if (placeholder) {
+                                placeholder.style.display = 'none';
+                            }
+                    
+                            // Check if there's an existing <br> element that Twitter uses for empty input
+                            const brElement = tweetContainer.querySelector('br[data-text="true"]');
+                    
+                            if (brElement) {
+                                // Define the message to type
+                                const message = text_twitter;
+                                let index = 0;
+                    
+                                // Function to simulate typing
+                                const typeText = () => {
+                                    const currentBr = tweetContainer.querySelector('br[data-text="true"]');
+                                    
+                                    if (currentBr) {
+                                        const newSpan = document.createElement('span');
+                                        newSpan.setAttribute('data-text', 'true');
+                                        newSpan.setAttribute('contenteditable', 'true'); // Make it editable
+                                        currentBr.replaceWith(newSpan);
+                                        newSpan.focus();
+                                    }
+                    
+                                    const spanElement = tweetContainer.querySelector('span[data-text="true"]');
+                    
+                                    if (spanElement && index < message.length) {
+                                        spanElement.innerText += message.charAt(index);
+                                        index++;
+                                    } else if (index >= message.length) {
+                                        clearInterval(typeInterval);
+                                        spanElement.focus();
+                    
+                                        // Allow user to edit text
+                                        spanElement.addEventListener('input', () => {
+                                            if (spanElement.innerText.trim() === '') {
+                                                placeholder.style.display = 'block'; // Show placeholder if empty
+                                            } else {
+                                                placeholder.style.display = 'none'; // Hide placeholder when text is present
+                                            }
+                                        });
+                    
+                                        // Add focus/blur behavior for styling
+                                        spanElement.addEventListener('focus', () => {
+                                            placeholder.classList.add('public-DraftEditorPlaceholder-root-hasFocus');
+                                        });
+                    
+                                        spanElement.addEventListener('blur', () => {
+                                            placeholder.classList.remove('public-DraftEditorPlaceholder-root-hasFocus');
+                                        });
+                                    }
+                                };
+                    
+                                // Start typing effect
+                                const typeInterval = setInterval(typeText, 100);
+                            }
+                        }
+                    };
+                    
+                    
+                    
+                    
+
+
+                    buttonContainer.appendChild(button);
+                });
+
+                // Append the button container to the "Hello" div
+                newDiv.appendChild(buttonContainer);
+
+                // Insert the new div **below** the target element
+                targetElement.appendChild(newDiv);
+            }
+        });
+    }
+
+
+
+
+
+
+
+
     // if (parts.length === 4 && parts[2] == "x.com") {
     //     let username = parts[3];
     //     console.log("username from twitter ======", username);
@@ -18469,371 +18642,371 @@ function doSomething() {
     // }
 
 
-    if (parts.length === 6) {
-
-        let text_twitter = document.getElementsByClassName("css-175oi2r r-1s2bzr4")[0]?.innerText;
-        console.log('Twitter text:', text_twitter);
-
-        let globalData1 = null;
-        let loadingInterval = null;
-
-        // Select the target element
-        const targetElement = document.querySelector('.css-175oi2r.r-18u37iz.r-1udh08x.r-1c4vpko.r-1c7gwzm.r-1ny4l3l');
-
-        // Check if the Twitter text exists
-        if (!text_twitter) {
-            console.log('Tweet text does not exist');
-            const messageDiv = document.createElement('div');
-            messageDiv.innerText = 'Tweet text does not exist';
-            messageDiv.style.color = 'red';
-            messageDiv.style.marginTop = '10px';
-            messageDiv.style.fontSize = '14px';
-
-            if (targetElement) {
-                targetElement.insertAdjacentElement('afterend', messageDiv);
-            }
-            return;
-        }
-
-        const memecoinTokens = [
-            "$DOGE", "$SHIB", "$PEPE", "$FLOKI", "$BabyDoge", "$LEASH",
-            "$AKITA", "$KISHU", "$HOGE", "$DOBO", "$POPCAT"
-        ];
-
-        // Find the first memecoin token in the tweet text
-        const foundToken = memecoinTokens.find(token => text_twitter.includes(token));
-
-        if (!foundToken) {
-            const messageDiv = document.createElement('div');
-            messageDiv.innerText = 'No memecoin token exists in the tweet';
-            messageDiv.style.color = 'red';
-            messageDiv.style.marginTop = '10px';
-            messageDiv.style.fontSize = '14px';
-
-            if (targetElement) {
-                targetElement.insertAdjacentElement('afterend', messageDiv);
-            }
-            return;
-        }
-
-        if (!document.getElementById("uniqueId0")) {
-            const outerDivx = document.createElement('div');
-            outerDivx.id = 'uniqueId0';
-            outerDivx.className = 'ui-container';
+    // if (parts.length === 6) {
+
+    //     let text_twitter = document.getElementsByClassName("css-175oi2r r-1s2bzr4")[0]?.innerText;
+    //     console.log('Twitter text:', text_twitter);
+
+    //     let globalData1 = null;
+    //     let loadingInterval = null;
+
+    //     // Select the target element
+    //     const targetElement = document.querySelector('.css-175oi2r.r-18u37iz.r-1udh08x.r-1c4vpko.r-1c7gwzm.r-1ny4l3l');
+
+    //     // Check if the Twitter text exists
+    //     if (!text_twitter) {
+    //         console.log('Tweet text does not exist');
+    //         const messageDiv = document.createElement('div');
+    //         messageDiv.innerText = 'Tweet text does not exist';
+    //         messageDiv.style.color = 'red';
+    //         messageDiv.style.marginTop = '10px';
+    //         messageDiv.style.fontSize = '14px';
+
+    //         if (targetElement) {
+    //             targetElement.insertAdjacentElement('afterend', messageDiv);
+    //         }
+    //         return;
+    //     }
+
+    //     const memecoinTokens = [
+    //         "$DOGE", "$SHIB", "$PEPE", "$FLOKI", "$BabyDoge", "$LEASH",
+    //         "$AKITA", "$KISHU", "$HOGE", "$DOBO", "$POPCAT"
+    //     ];
+
+    //     // Find the first memecoin token in the tweet text
+    //     const foundToken = memecoinTokens.find(token => text_twitter.includes(token));
+
+    //     if (!foundToken) {
+    //         const messageDiv = document.createElement('div');
+    //         messageDiv.innerText = 'No memecoin token exists in the tweet';
+    //         messageDiv.style.color = 'red';
+    //         messageDiv.style.marginTop = '10px';
+    //         messageDiv.style.fontSize = '14px';
+
+    //         if (targetElement) {
+    //             targetElement.insertAdjacentElement('afterend', messageDiv);
+    //         }
+    //         return;
+    //     }
+
+    //     if (!document.getElementById("uniqueId0")) {
+    //         const outerDivx = document.createElement('div');
+    //         outerDivx.id = 'uniqueId0';
+    //         outerDivx.className = 'ui-container';
 
-            const innerDiv = document.createElement('div');
-            innerDiv.id = 'firstIcon';
-            innerDiv.style.paddingTop = "10px";
+    //         const innerDiv = document.createElement('div');
+    //         innerDiv.id = 'firstIcon';
+    //         innerDiv.style.paddingTop = "10px";
 
-            // Abbreviate the token if it's long (e.g., "$DOGE")
-            const abbreviatedToken = foundToken.length > 6
-                ? `${foundToken.slice(0, 6)}...`
-                : foundToken;
+    //         // Abbreviate the token if it's long (e.g., "$DOGE")
+    //         const abbreviatedToken = foundToken.length > 6
+    //             ? `${foundToken.slice(0, 6)}...`
+    //             : foundToken;
 
-            const initialChar = foundToken.charAt(1); // Get the first character of the token (after $)
+    //         const initialChar = foundToken.charAt(1); // Get the first character of the token (after $)
 
-            innerDiv.innerHTML = `
-        <div style="background-color: #000000; border:2px solid #2F3336; color: white; padding: 20px; margin: 10px; border-radius: 15px; display: flex; flex-direction: row; align-items: center; gap: 15px;">
-            <!-- Rounded div -->
-            <div style="flex-grow: 1;">
-                <div  id="wbtcToken" style="display: flex; flex-direction: row; gap:6px; align-items: center; margin-bottom:4px;">
-                    <div style="background-color: #FF9900; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <span style="font-size: 14px; color: white; font-weight: bold;">${initialChar}</span>
-                    </div>
-                    <div style="font-size: 14px; color: #bbb; cursor: pointer;">
-                        ${abbreviatedToken} <span style="color: #3b82f6;">${foundToken}</span>
-                    </div>
-                </div>
-                <div style="font-size: 22px; font-weight: bold;">$305.2M MC <span style="font-size: 12px; color: #bbb; cursor: pointer;">&#x21bb;</span></div>
-                <div style="font-size: 14px; color: #4caf50;">+5.44% today</div>
-                <div style="font-size: 14px; color: #bbb;">$101.67K price</div>
-            </div>
-            <!-- Buy and Sell buttons -->
-            <div style="display: flex; flex-direction: row; align-items: center; gap: 10px;">
-                <button style="background-color: #4caf50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 14px;">Buy</button>
-                <button style="background-color: #f44336; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 14px;">Sell</button>
-            </div>
-        </div>`;
-
-            outerDivx.appendChild(innerDiv);
-
-            // Insert outerDivx after the target element
-            if (targetElement) {
-                targetElement.insertAdjacentElement('afterend', outerDivx);
-            }
-
-            // Optional: Bind click event to the token display
-            const wbtcToken = document.getElementById("wbtcToken");
-            if (wbtcToken) {
-                wbtcToken.addEventListener("click", openPopupTwitter);
-            }
-        }
-
-
+    //         innerDiv.innerHTML = `
+    //     <div style="background-color: #000000; border:2px solid #2F3336; color: white; padding: 20px; margin: 10px; border-radius: 15px; display: flex; flex-direction: row; align-items: center; gap: 15px;">
+    //         <!-- Rounded div -->
+    //         <div style="flex-grow: 1;">
+    //             <div  id="wbtcToken" style="display: flex; flex-direction: row; gap:6px; align-items: center; margin-bottom:4px;">
+    //                 <div style="background-color: #FF9900; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+    //                     <span style="font-size: 14px; color: white; font-weight: bold;">${initialChar}</span>
+    //                 </div>
+    //                 <div style="font-size: 14px; color: #bbb; cursor: pointer;">
+    //                     ${abbreviatedToken} <span style="color: #3b82f6;">${foundToken}</span>
+    //                 </div>
+    //             </div>
+    //             <div style="font-size: 22px; font-weight: bold;">$305.2M MC <span style="font-size: 12px; color: #bbb; cursor: pointer;">&#x21bb;</span></div>
+    //             <div style="font-size: 14px; color: #4caf50;">+5.44% today</div>
+    //             <div style="font-size: 14px; color: #bbb;">$101.67K price</div>
+    //         </div>
+    //         <!-- Buy and Sell buttons -->
+    //         <div style="display: flex; flex-direction: row; align-items: center; gap: 10px;">
+    //             <button style="background-color: #4caf50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 14px;">Buy</button>
+    //             <button style="background-color: #f44336; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 14px;">Sell</button>
+    //         </div>
+    //     </div>`;
+
+    //         outerDivx.appendChild(innerDiv);
+
+    //         // Insert outerDivx after the target element
+    //         if (targetElement) {
+    //             targetElement.insertAdjacentElement('afterend', outerDivx);
+    //         }
+
+    //         // Optional: Bind click event to the token display
+    //         const wbtcToken = document.getElementById("wbtcToken");
+    //         if (wbtcToken) {
+    //             wbtcToken.addEventListener("click", openPopupTwitter);
+    //         }
+    //     }
+
+
 
 
-        // if (!document.getElementById("uniqueId0")) {
-        //     const outerDivx = document.createElement('div');
-        //     outerDivx.id = 'uniqueId0';
-        //     outerDivx.className = 'css-175oi2r r-1kbdv8c r-18u37iz r-1oszu61 r-3qxfft r-n7gxbd r-2sztyj r-1efd50x r-5kkj8d r-h3s6tt r-1wtj0ep';
+    //     // if (!document.getElementById("uniqueId0")) {
+    //     //     const outerDivx = document.createElement('div');
+    //     //     outerDivx.id = 'uniqueId0';
+    //     //     outerDivx.className = 'css-175oi2r r-1kbdv8c r-18u37iz r-1oszu61 r-3qxfft r-n7gxbd r-2sztyj r-1efd50x r-5kkj8d r-h3s6tt r-1wtj0ep';
 
-        //     const svgIcon = `<svg width="30" height="30" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
-        //         <circle cx="25" cy="25" r="20" stroke="#061F30" stroke-width="5" fill="none"/>
-        //         <circle cx="25" cy="25" r="20" stroke="#1D97EB" stroke-width="5" fill="none" stroke-dasharray="31.4 31.4" stroke-linecap="round">
-        //           <animateTransform attributeName="transform" type="rotate" values="0 25 25;360 25 25" dur="1s" repeatCount="indefinite"/>
-        //         </circle>
-        //       </svg>
-        //       `;
+    //     //     const svgIcon = `<svg width="30" height="30" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+    //     //         <circle cx="25" cy="25" r="20" stroke="#061F30" stroke-width="5" fill="none"/>
+    //     //         <circle cx="25" cy="25" r="20" stroke="#1D97EB" stroke-width="5" fill="none" stroke-dasharray="31.4 31.4" stroke-linecap="round">
+    //     //           <animateTransform attributeName="transform" type="rotate" values="0 25 25;360 25 25" dur="1s" repeatCount="indefinite"/>
+    //     //         </circle>
+    //     //       </svg>
+    //     //       `;
 
-        //     // Create a span for the loading text
-        //     const loadingText = document.createElement('span');
-        //     loadingText.textContent = 'Loading';
-        //     loadingText.style.marginLeft = '10px'; // Add some space between the SVG and the text
+    //     //     // Create a span for the loading text
+    //     //     const loadingText = document.createElement('span');
+    //     //     loadingText.textContent = 'Loading';
+    //     //     loadingText.style.marginLeft = '10px'; // Add some space between the SVG and the text
 
-        //     outerDivx.innerHTML = svgIcon;
-        //     outerDivx.appendChild(loadingText);
+    //     //     outerDivx.innerHTML = svgIcon;
+    //     //     outerDivx.appendChild(loadingText);
 
 
-        //     const targetElement = document.querySelector('.css-175oi2r.r-18u37iz.r-1udh08x.r-1c4vpko.r-1c7gwzm.r-1ny4l3l');
+    //     //     const targetElement = document.querySelector('.css-175oi2r.r-18u37iz.r-1udh08x.r-1c4vpko.r-1c7gwzm.r-1ny4l3l');
 
 
-        //     // Insert outerDivx after the target element
-        //     if (targetElement) {
-        //         targetElement.insertAdjacentElement('afterend', outerDivx);
-        //     }
+    //     //     // Insert outerDivx after the target element
+    //     //     if (targetElement) {
+    //     //         targetElement.insertAdjacentElement('afterend', outerDivx);
+    //     //     }
 
 
-        //     let dotCount = 0;
-        //     loadingInterval = setInterval(() => {
-        //         dotCount = (dotCount % 3) + 1;
-        //         loadingText.textContent = `Loading${'.'.repeat(dotCount)}`;
-        //     }, 10000);
+    //     //     let dotCount = 0;
+    //     //     loadingInterval = setInterval(() => {
+    //     //         dotCount = (dotCount % 3) + 1;
+    //     //         loadingText.textContent = `Loading${'.'.repeat(dotCount)}`;
+    //     //     }, 10000);
 
-        // }
+    //     // }
 
-        // document.getElementById('uniqueId0').remove();
+    //     // document.getElementById('uniqueId0').remove();
 
 
-        // Check if uniqueId0 already exists
+    //     // Check if uniqueId0 already exists
 
 
 
 
 
-        //     const newDiv = document.createElement('div');
-        //     newDiv.id = "uniqueId6";
-        //     const svgIcon = `<svg width="30" height="30" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
-        //     <circle cx="25" cy="25" r="20" stroke="#061F30" stroke-width="5" fill="none"/>
-        //     <circle cx="25" cy="25" r="20" stroke="#1D97EB" stroke-width="5" fill="none" stroke-dasharray="31.4 31.4" stroke-linecap="round">
-        //       <animateTransform attributeName="transform" type="rotate" values="0 25 25;360 25 25" dur="1s" repeatCount="indefinite"/>
-        //     </circle>
-        //   </svg>`;
+    //     //     const newDiv = document.createElement('div');
+    //     //     newDiv.id = "uniqueId6";
+    //     //     const svgIcon = `<svg width="30" height="30" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+    //     //     <circle cx="25" cy="25" r="20" stroke="#061F30" stroke-width="5" fill="none"/>
+    //     //     <circle cx="25" cy="25" r="20" stroke="#1D97EB" stroke-width="5" fill="none" stroke-dasharray="31.4 31.4" stroke-linecap="round">
+    //     //       <animateTransform attributeName="transform" type="rotate" values="0 25 25;360 25 25" dur="1s" repeatCount="indefinite"/>
+    //     //     </circle>
+    //     //   </svg>`;
 
-        //     newDiv.innerHTML = '<div class="flex flex-col"><h3>Sentiplex Summary</h3><p>' + svgIcon + '</p></div>';
+    //     //     newDiv.innerHTML = '<div class="flex flex-col"><h3>Sentiplex Summary</h3><p>' + svgIcon + '</p></div>';
 
-        //     // Select the target element
-        //     const targetElement = document.querySelector('.css-175oi2r.r-kemksi.r-1kqtdi0.r-1867qdf.r-1phboty.r-rs99b7.r-1ifxtd0.r-1udh08x');
+    //     //     // Select the target element
+    //     //     const targetElement = document.querySelector('.css-175oi2r.r-kemksi.r-1kqtdi0.r-1867qdf.r-1phboty.r-rs99b7.r-1ifxtd0.r-1udh08x');
 
-        //     // Insert newDiv before targetElement
-        //     targetElement.parentNode.insertBefore(newDiv, targetElement);
+    //     //     // Insert newDiv before targetElement
+    //     //     targetElement.parentNode.insertBefore(newDiv, targetElement);
 
 
-        // URLs for the APIs
-        const url_1 = 'https://content-analysis.onrender.com/api/label-text';
-        const url_2 = 'https://content-analysis.onrender.com/vision/gpt-4o';
-        const url_3 = 'https://content-analysis.onrender.com/vision/mixtral-8x7b';
-        const url_4 = 'https://content-analysis.onrender.com/vision/llama-3';
-        const url_5 = 'https://content-analysis.onrender.com/onchain/send-message';
-        const url_6 = 'https://content-analysis.onrender.com/vision/gpt-4o';
+    //     // URLs for the APIs
+    //     const url_1 = 'https://content-analysis.onrender.com/api/label-text';
+    //     const url_2 = 'https://content-analysis.onrender.com/vision/gpt-4o';
+    //     const url_3 = 'https://content-analysis.onrender.com/vision/mixtral-8x7b';
+    //     const url_4 = 'https://content-analysis.onrender.com/vision/llama-3';
+    //     const url_5 = 'https://content-analysis.onrender.com/onchain/send-message';
+    //     const url_6 = 'https://content-analysis.onrender.com/vision/gpt-4o';
 
-        // Data for the POST requests
-        const data_1 = JSON.stringify({ text_inputs: [text_twitter] });
-        const sumarize = "Give me a brief and crisp summary of this text: " + "'" + text_twitter + "'"
-        text_twitter = "Give me an estimate of authenticity of this post. Don't give any explanations, just a number from 1 to 100: " + "'" + text_twitter + "'"
-        console.log('text', text_twitter);
-        const data_2 = JSON.stringify({ content: text_twitter });
-        const data_3 = JSON.stringify({ content: text_twitter });
-        const data_4 = JSON.stringify({ content: text_twitter });
-        const data_5 = JSON.stringify({ message: text_twitter });
-        const data_6 = JSON.stringify({ content: sumarize });
+    //     // Data for the POST requests
+    //     const data_1 = JSON.stringify({ text_inputs: [text_twitter] });
+    //     const sumarize = "Give me a brief and crisp summary of this text: " + "'" + text_twitter + "'"
+    //     text_twitter = "Give me an estimate of authenticity of this post. Don't give any explanations, just a number from 1 to 100: " + "'" + text_twitter + "'"
+    //     console.log('text', text_twitter);
+    //     const data_2 = JSON.stringify({ content: text_twitter });
+    //     const data_3 = JSON.stringify({ content: text_twitter });
+    //     const data_4 = JSON.stringify({ content: text_twitter });
+    //     const data_5 = JSON.stringify({ message: text_twitter });
+    //     const data_6 = JSON.stringify({ content: sumarize });
 
-        // Fetch requests
-        const fetch_1 = fetch(url_1, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: data_1 });
-        const fetch_2 = fetch(url_2, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: data_2 });
-        const fetch_3 = fetch(url_3, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: data_3 });
-        const fetch_4 = fetch(url_4, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: data_4 });
-        const fetch_5 = fetch(url_5, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: data_5 });
-        const fetch_6 = fetch(url_6, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: data_6 });
+    //     // Fetch requests
+    //     const fetch_1 = fetch(url_1, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: data_1 });
+    //     const fetch_2 = fetch(url_2, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: data_2 });
+    //     const fetch_3 = fetch(url_3, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: data_3 });
+    //     const fetch_4 = fetch(url_4, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: data_4 });
+    //     const fetch_5 = fetch(url_5, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: data_5 });
+    //     const fetch_6 = fetch(url_6, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: data_6 });
 
 
-        Promise.all([fetch_1, fetch_2, fetch_3, fetch_4, fetch_5, fetch_6])
-            .then(responses => Promise.all(responses.map(res => res.json())))
-            .then(([data_1, data_2, data_3, data_4, data_5, data_6]) => {
-                clearInterval(loadingInterval);
-                // document.getElementById('uniqueId0').remove();
-                // document.getElementById('uniqueId6').remove();
+    //     Promise.all([fetch_1, fetch_2, fetch_3, fetch_4, fetch_5, fetch_6])
+    //         .then(responses => Promise.all(responses.map(res => res.json())))
+    //         .then(([data_1, data_2, data_3, data_4, data_5, data_6]) => {
+    //             clearInterval(loadingInterval);
+    //             // document.getElementById('uniqueId0').remove();
+    //             // document.getElementById('uniqueId6').remove();
 
-                console.log('twitter_Data from API 1:', data_1);
-                console.log('Data from API 2:', data_2.content);
-                console.log('Data from API 3:', data_3.content);
-                console.log('Data from API 4:', data_4.content);
-                console.log('Data from API 5:', data_5.response);
-                console.log('Data from API 6:', data_6.content);
+    //             console.log('twitter_Data from API 1:', data_1);
+    //             console.log('Data from API 2:', data_2.content);
+    //             console.log('Data from API 3:', data_3.content);
+    //             console.log('Data from API 4:', data_4.content);
+    //             console.log('Data from API 5:', data_5.response);
+    //             console.log('Data from API 6:', data_6.content);
 
-                // Step 1: Create an array with all values
-                const values1 = [data_2.content, data_3.content, data_4.content, data_5.response]
-                    .map(Number) // Convert all values to numbers
-                    .filter(val => !isNaN(val) && val <= 100); // Filter out NaN values and values greater than 100
+    //             // Step 1: Create an array with all values
+    //             const values1 = [data_2.content, data_3.content, data_4.content, data_5.response]
+    //                 .map(Number) // Convert all values to numbers
+    //                 .filter(val => !isNaN(val) && val <= 100); // Filter out NaN values and values greater than 100
 
-                // Step 3: Calculate the average of the remaining values
-                const average1 = values1.length > 0 ? values1.reduce((acc, val) => acc + val, 0) / values1.length : 0;
-                console.log('Average of twitter_post:', average1);
+    //             // Step 3: Calculate the average of the remaining values
+    //             const average1 = values1.length > 0 ? values1.reduce((acc, val) => acc + val, 0) / values1.length : 0;
+    //             console.log('Average of twitter_post:', average1);
 
 
-                // Check if the element already exists
+    //             // Check if the element already exists
 
 
 
-                globalData1 = data_1;
+    //             globalData1 = data_1;
 
 
-                // if (!document.getElementById("uniqueId1")) {
-                //     const outerDivx = document.createElement('div');
-                //     outerDivx.id = 'uniqueId1';
+    //             // if (!document.getElementById("uniqueId1")) {
+    //             //     const outerDivx = document.createElement('div');
+    //             //     outerDivx.id = 'uniqueId1';
 
-                //     const svgIcon = getEmojiForLabel(globalData1.topics.label);
+    //             //     const svgIcon = getEmojiForLabel(globalData1.topics.label);
 
-                //     outerDivx.innerHTML = svgIcon;
-                //     outerDivx.title = globalData1.topics.label + ' ' + Math.round(globalData1.topics.score * 100) + '%';
+    //             //     outerDivx.innerHTML = svgIcon;
+    //             //     outerDivx.title = globalData1.topics.label + ' ' + Math.round(globalData1.topics.score * 100) + '%';
 
-                //     const targetElement = document.querySelector('#uniqueId0');
-                //     targetElement.appendChild(outerDivx);
+    //             //     const targetElement = document.querySelector('#uniqueId0');
+    //             //     targetElement.appendChild(outerDivx);
 
 
-                // }
+    //             // }
 
-                // if (!document.getElementById("uniqueId2")) {
+    //             // if (!document.getElementById("uniqueId2")) {
 
-                //     const outerDivx = document.createElement('div');
-                //     outerDivx.id = 'uniqueId2';
+    //             //     const outerDivx = document.createElement('div');
+    //             //     outerDivx.id = 'uniqueId2';
 
-                //     const svgIcon = getEmojiForLabel(globalData1.sentiment.label);
+    //             //     const svgIcon = getEmojiForLabel(globalData1.sentiment.label);
 
-                //     outerDivx.innerHTML = svgIcon;
-                //     outerDivx.title = globalData1.sentiment.label + ' ' + Math.round(globalData1.sentiment.score * 100) + '%';
+    //             //     outerDivx.innerHTML = svgIcon;
+    //             //     outerDivx.title = globalData1.sentiment.label + ' ' + Math.round(globalData1.sentiment.score * 100) + '%';
 
-                //     const targetElement = document.querySelector('#uniqueId0');
-                //     targetElement.appendChild(outerDivx);
+    //             //     const targetElement = document.querySelector('#uniqueId0');
+    //             //     targetElement.appendChild(outerDivx);
 
 
-                // }
+    //             // }
 
 
-                // if (!document.getElementById("uniqueId3")) {
+    //             // if (!document.getElementById("uniqueId3")) {
 
-                //     const outerDivx = document.createElement('div');
-                //     outerDivx.id = 'uniqueId3';
+    //             //     const outerDivx = document.createElement('div');
+    //             //     outerDivx.id = 'uniqueId3';
 
-                //     const svgIcon = getEmojiForLabel(globalData1.moderation.label);
+    //             //     const svgIcon = getEmojiForLabel(globalData1.moderation.label);
 
-                //     outerDivx.innerHTML = svgIcon;
-                //     outerDivx.title = globalData1.moderation.label + ' ' + Math.round(globalData1.moderation.score * 100) + '%';
+    //             //     outerDivx.innerHTML = svgIcon;
+    //             //     outerDivx.title = globalData1.moderation.label + ' ' + Math.round(globalData1.moderation.score * 100) + '%';
 
-                //     const targetElement = document.querySelector('#uniqueId0');
-                //     targetElement.appendChild(outerDivx);
+    //             //     const targetElement = document.querySelector('#uniqueId0');
+    //             //     targetElement.appendChild(outerDivx);
 
-                // }
+    //             // }
 
 
-                // if (!document.getElementById("uniqueId4")) {
+    //             // if (!document.getElementById("uniqueId4")) {
 
-                //     const outerDivx = document.createElement('div');
-                //     outerDivx.id = 'uniqueId4';
+    //             //     const outerDivx = document.createElement('div');
+    //             //     outerDivx.id = 'uniqueId4';
 
 
-                //     const svgIcon = getEmojiForLabel(globalData1.emotion.label);
+    //             //     const svgIcon = getEmojiForLabel(globalData1.emotion.label);
 
-                //     outerDivx.innerHTML = svgIcon;
-                //     outerDivx.title = globalData1.emotion.label + ' ' + Math.round(globalData1.emotion.score * 100) + '%';
+    //             //     outerDivx.innerHTML = svgIcon;
+    //             //     outerDivx.title = globalData1.emotion.label + ' ' + Math.round(globalData1.emotion.score * 100) + '%';
 
-                //     const targetElement = document.querySelector('#uniqueId0');
-                //     targetElement.appendChild(outerDivx);
+    //             //     const targetElement = document.querySelector('#uniqueId0');
+    //             //     targetElement.appendChild(outerDivx);
 
 
-                // }
+    //             // }
 
 
 
 
-                // if (!document.getElementById("uniqueButton")) {
+    //             // if (!document.getElementById("uniqueButton")) {
 
-                //     const outerDivx = document.createElement('div');
-                //     outerDivx.id = 'uniqueButton';
-                //     outerDivx.style.paddingTop = "10px";
-                //     // Create the button element
-                //     const button = document.createElement('button');
-                //     button.innerHTML = "CreateMeme";  // Set button text
-                //     button.id = "btn_unique";
+    //             //     const outerDivx = document.createElement('div');
+    //             //     outerDivx.id = 'uniqueButton';
+    //             //     outerDivx.style.paddingTop = "10px";
+    //             //     // Create the button element
+    //             //     const button = document.createElement('button');
+    //             //     button.innerHTML = "CreateMeme";  // Set button text
+    //             //     button.id = "btn_unique";
 
-                //     // Add inline style to match the button in the image
-                //     button.style.backgroundColor = '#f2f2f2';  // Light background
-                //     button.style.color = '#000';  // Black text
-                //     button.style.border = '1px solid #d1d1d1';  // Light gray border
-                //     button.style.padding = '8px 16px';  // Padding
-                //     button.style.borderRadius = '20px';  // Rounded corners
-                //     button.style.fontSize = '14px';  // Font size
-                //     button.style.fontFamily = 'Arial, sans-serif';  // Font family
-                //     button.style.cursor = 'pointer';  // Cursor change on hover
-                //     button.style.outline = 'none';  // Remove outline on focus
-                //     button.style.fontWeight = 'bold';
-                //     // Add event listeners for hover and active states
-                //     button.onmouseover = function () {
-                //         button.style.backgroundColor = '#e0e0e0';  // Slightly darker on hover
-                //     };
+    //             //     // Add inline style to match the button in the image
+    //             //     button.style.backgroundColor = '#f2f2f2';  // Light background
+    //             //     button.style.color = '#000';  // Black text
+    //             //     button.style.border = '1px solid #d1d1d1';  // Light gray border
+    //             //     button.style.padding = '8px 16px';  // Padding
+    //             //     button.style.borderRadius = '20px';  // Rounded corners
+    //             //     button.style.fontSize = '14px';  // Font size
+    //             //     button.style.fontFamily = 'Arial, sans-serif';  // Font family
+    //             //     button.style.cursor = 'pointer';  // Cursor change on hover
+    //             //     button.style.outline = 'none';  // Remove outline on focus
+    //             //     button.style.fontWeight = 'bold';
+    //             //     // Add event listeners for hover and active states
+    //             //     button.onmouseover = function () {
+    //             //         button.style.backgroundColor = '#e0e0e0';  // Slightly darker on hover
+    //             //     };
 
-                //     button.onmouseout = function () {
-                //         button.style.backgroundColor = '#f2f2f2';  // Revert to original color
-                //     };
+    //             //     button.onmouseout = function () {
+    //             //         button.style.backgroundColor = '#f2f2f2';  // Revert to original color
+    //             //     };
 
-                //     button.onmousedown = function () {
-                //         button.style.backgroundColor = '#d1d1d1';  // Darker when clicked
-                //     };
+    //             //     button.onmousedown = function () {
+    //             //         button.style.backgroundColor = '#d1d1d1';  // Darker when clicked
+    //             //     };
 
-                //     button.onmouseup = function () {
-                //         button.style.backgroundColor = '#e0e0e0';  // Go back to hover state
-                //     };
+    //             //     button.onmouseup = function () {
+    //             //         button.style.backgroundColor = '#e0e0e0';  // Go back to hover state
+    //             //     };
 
-                //     button.onclick = function () {
-                //         openPopupTwitter();
-                //     };
+    //             //     button.onclick = function () {
+    //             //         openPopupTwitter();
+    //             //     };
 
-                //     // Add the button to the div
-                //     outerDivx.appendChild(button);
+    //             //     // Add the button to the div
+    //             //     outerDivx.appendChild(button);
 
-                //     const targetElement = document.querySelector('#uniqueId0');
-                //     targetElement.appendChild(outerDivx);
-                // }
+    //             //     const targetElement = document.querySelector('#uniqueId0');
+    //             //     targetElement.appendChild(outerDivx);
+    //             // }
 
 
 
 
 
-                // const newDiv = document.createElement('div');
-                // newDiv.id = "uniqueId6";
-                // newDiv.innerHTML = '<div class="flex flex-col"><h3>Sentiplex Summary</h3><p>' + data_6.content + '</p></div>';
+    //             // const newDiv = document.createElement('div');
+    //             // newDiv.id = "uniqueId6";
+    //             // newDiv.innerHTML = '<div class="flex flex-col"><h3>Sentiplex Summary</h3><p>' + data_6.content + '</p></div>';
 
-                // // Select the target element
-                // const targetElement = document.querySelector('.css-175oi2r.r-kemksi.r-1kqtdi0.r-1867qdf.r-1phboty.r-rs99b7.r-1ifxtd0.r-1udh08x');
+    //             // // Select the target element
+    //             // const targetElement = document.querySelector('.css-175oi2r.r-kemksi.r-1kqtdi0.r-1867qdf.r-1phboty.r-rs99b7.r-1ifxtd0.r-1udh08x');
 
-                // // Insert newDiv before targetElement
-                // targetElement.parentNode.insertBefore(newDiv, targetElement);
+    //             // // Insert newDiv before targetElement
+    //             // targetElement.parentNode.insertBefore(newDiv, targetElement);
 
 
 
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+    //         })
+    //         .catch(error => {
+    //             console.error('Error:', error);
+    //         });
 
 
 
@@ -18841,7 +19014,7 @@ function doSomething() {
 
 
 
-    }
+    // }
 
 
     // if (parts.length === 5) {
