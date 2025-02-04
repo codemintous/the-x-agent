@@ -18443,160 +18443,367 @@ function doSomething() {
     }
 
     if (parts.length === 6) {
-        let text_twitter = document.getElementsByClassName("css-175oi2r r-1s2bzr4")[0]?.innerText;
-        console.log('Twitter text:', text_twitter);
+    let text_twitter = document.getElementsByClassName("css-175oi2r r-1s2bzr4")[0]?.innerText;
+    console.log('Twitter text:', text_twitter);
 
-        let globalData1 = null;
-        let loadingInterval = null;
+    let globalData1 = null;
+    let loadingInterval = null;
 
-        // Wait for the tweetTextarea_0 element to appear
-        waitForElement('div[data-testid="tweetTextarea_0"]', (targetElement) => {
-            if (!text_twitter) {
-                console.log('Tweet text does not exist');
-                const messageDiv = document.createElement('div');
-                messageDiv.innerText = 'Tweet text does not exist';
-                messageDiv.style.color = 'red';
-                messageDiv.style.marginTop = '10px';
-                messageDiv.style.fontSize = '14px';
+    // Wait for the tweetTextarea_0 element to appear
+    waitForElement('div[data-testid="tweetTextarea_0"]', (targetElement) => {
+        if (!text_twitter) {
+            console.log('Tweet text does not exist');
+            const messageDiv = document.createElement('div');
+            messageDiv.innerText = 'Tweet text does not exist';
+            messageDiv.style.color = 'red';
+            messageDiv.style.marginTop = '10px';
+            messageDiv.style.fontSize = '14px';
 
-                targetElement.insertAdjacentElement('afterend', messageDiv);
-                return;
-            }
+            targetElement.insertAdjacentElement('afterend', messageDiv);
+            return;
+        }
 
-            // Check if "uniqueResponse" div already exists
-            if (!document.getElementById("uniqueResponse")) {
-                const newDiv = document.createElement('div');
+        // Check if "uniqueResponse" div already exists
+        if (!document.getElementById("uniqueResponse")) {
+            const newDiv = document.createElement('div');
+            newDiv.id = "uniqueResponse";
 
-                newDiv.id = "uniqueResponse";
+            // Create the button container
+            const buttonContainer = document.createElement("div");
+            buttonContainer.id = "customButtonsContainer";
+            buttonContainer.style.marginTop = "10px";
+            buttonContainer.style.display = "flex";
+            buttonContainer.style.gap = "8px";
+            buttonContainer.style.flexWrap = "wrap";
 
-                // Create the button container
-                const buttonContainer = document.createElement("div");
-                buttonContainer.id = "customButtonsContainer";
-                buttonContainer.style.marginTop = "10px";
-                buttonContainer.style.display = "flex";
-                buttonContainer.style.gap = "8px";
-                buttonContainer.style.flexWrap = "wrap";
+            // Define button details
+            const buttons = [
+                { emoji: "👍", text: "Positive", className: "custom-tone-positive" },
+                { emoji: "👎", text: "Negative", className: "custom-tone-negative" },
+                { emoji: "🤝", text: "Supportive", className: "custom-tone-supportive" },
+                { emoji: "🎉", text: "Enthusiastic", className: "custom-tone-enthusiastic" },
+                { emoji: "👏", text: "Encouraging", className: "custom-tone-encouraging" },
+                { emoji: "🤗", text: "Empathetic", className: "custom-tone-empathetic" },
+                { emoji: "🎊", text: "Congratulatory", className: "custom-tone-congratulatory" },
+                { emoji: "🙌", text: "Appreciative", className: "custom-tone-appreciative" },
+                { emoji: "ℹ️", text: "Informative", className: "custom-tone-informative" },
+                { emoji: "🚀", text: "Motivational", className: "custom-tone-motivational" },
+                { emoji: "🌟", text: "Inspirational", className: "custom-tone-inspirational" },
+                { emoji: "🔥", text: "Viral", className: "custom-tone-viral" },
+                { emoji: "👔", text: "Professional", className: "custom-tone-professional" },
+                { emoji: "😊", text: "Friendly", className: "custom-tone-friendly" },
+                { emoji: "🧘‍♀️", text: "Calm", className: "custom-tone-calm" },
+                { emoji: "🙏", text: "Polite", className: "custom-tone-polite" },
+                { emoji: "😂", text: "Humorous", className: "custom-tone-humorous" },
+                { emoji: "💡", text: "Idea", className: "custom-tone-idea" },
+                { emoji: "❓", text: "Questioning", className: "custom-tone-questioning" },
+            ];
 
-                // Define button details
-                const buttons = [
-                    { emoji: "👍", text: "Positive", className: "custom-tone-positive" },
-                    { emoji: "👎", text: "Negative", className: "custom-tone-negative" },
-                    { emoji: "🤝", text: "Supportive", className: "custom-tone-supportive" },
-                    { emoji: "🎉", text: "Enthusiastic", className: "custom-tone-enthusiastic" },
-                    { emoji: "👏", text: "Encouraging", className: "custom-tone-encouraging" },
-                    { emoji: "🤗", text: "Empathetic", className: "custom-tone-empathetic" },
-                    { emoji: "🎊", text: "Congratulatory", className: "custom-tone-congratulatory" },
-                    { emoji: "🙌", text: "Appreciative", className: "custom-tone-appreciative" },
-                    { emoji: "ℹ️", text: "Informative", className: "custom-tone-informative" },
-                    { emoji: "🚀", text: "Motivational", className: "custom-tone-motivational" },
-                    { emoji: "🌟", text: "Inspirational", className: "custom-tone-inspirational" },
-                    { emoji: "🔥", text: "Viral", className: "custom-tone-viral" },
-                    { emoji: "👔", text: "Professional", className: "custom-tone-professional" },
-                    { emoji: "😊", text: "Friendly", className: "custom-tone-friendly" },
-                    { emoji: "🧘‍♀️", text: "Calm", className: "custom-tone-calm" },
-                    { emoji: "🙏", text: "Polite", className: "custom-tone-polite" },
-                    { emoji: "😂", text: "Humorous", className: "custom-tone-humorous" },
-                    { emoji: "💡", text: "Idea", className: "custom-tone-idea" },
-                    { emoji: "❓", text: "Questioning", className: "custom-tone-questioning" },
-                ];
+            // Create buttons
+            buttons.forEach(({ emoji, text, className }) => {
+                const button = document.createElement("button");
+                button.className = className;
+                button.innerHTML = `<span>${emoji}</span> <span>${text}</span>`;
+                button.style.padding = "6px 12px";
+                button.style.color = "#1d9bef";
+                button.style.border = "1px solid black";
+                button.style.borderRadius = "5px";
+                button.style.cursor = "pointer";
+                button.style.backgroundColor = "#FFFFFF";
+                button.style.fontSize = "14px";
 
-                // Create buttons
+                button.onclick = () => {
+                    const tweetContainer = document.querySelector('div[data-testid="tweetTextarea_0RichTextInputContainer"]');
+                    
+                    if (tweetContainer) {
+                        const placeholder = tweetContainer.querySelector('.public-DraftEditorPlaceholder-root');
+                        if (placeholder) {
+                            placeholder.style.display = 'none';
+                        }
+
+                        const brElement = tweetContainer.querySelector('br[data-text="true"]');
+                        
+                        if (brElement) {
+                            const message = text_twitter;
+                            let index = 0;
+
+                            const typeText = () => {
+                                const currentBr = tweetContainer.querySelector('br[data-text="true"]');
+                                
+                                if (currentBr) {
+                                    const newSpan = document.createElement('span');
+                                    newSpan.setAttribute('data-text', 'true');
+                                    newSpan.setAttribute('contenteditable', 'true');
+                                    currentBr.replaceWith(newSpan);
+                                    newSpan.focus();
+                                }
+
+                                const spanElement = tweetContainer.querySelector('span[data-text="true"]');
+
+                                if (spanElement && index < message.length) {
+                                    spanElement.innerText += message.charAt(index);
+                                    index++;
+                                } else if (index >= message.length) {
+                                    clearInterval(typeInterval);
+                                    spanElement.focus();
+
+                                    // Create and dispatch input event
+                                    const inputEvent = new InputEvent('input', {
+                                        bubbles: true,
+                                        cancelable: true,
+                                    });
+                                    spanElement.dispatchEvent(inputEvent);
+
+                                    // Create and dispatch change event
+                                    const changeEvent = new Event('change', {
+                                        bubbles: true,
+                                        cancelable: true,
+                                    });
+                                    spanElement.dispatchEvent(changeEvent);
+
+                                    // Create and dispatch custom Tweet events
+                                    const composeTweetEvent = new Event('composeTweet', {
+                                        bubbles: true,
+                                        cancelable: true,
+                                    });
+                                    spanElement.dispatchEvent(composeTweetEvent);
+
+                                    // Trigger the tweet button activation
+                                    const tweetButton = document.querySelector('[data-testid="tweetButton"]');
+                                    if (tweetButton) {
+                                        tweetButton.removeAttribute('disabled');
+                                        tweetButton.style.opacity = '1';
+                                    }
+
+                                    // Add focus/blur behavior
+                                    spanElement.addEventListener('input', () => {
+                                        if (spanElement.innerText.trim() === '') {
+                                            placeholder.style.display = 'block';
+                                        } else {
+                                            placeholder.style.display = 'none';
+                                        }
+                                        // Dispatch events again on manual input
+                                        spanElement.dispatchEvent(new InputEvent('input', { bubbles: true }));
+                                        spanElement.dispatchEvent(new Event('change', { bubbles: true }));
+                                    });
+
+                                    spanElement.addEventListener('focus', () => {
+                                        placeholder.classList.add('public-DraftEditorPlaceholder-root-hasFocus');
+                                    });
+
+                                    spanElement.addEventListener('blur', () => {
+                                        placeholder.classList.remove('public-DraftEditorPlaceholder-root-hasFocus');
+                                    });
+                                }
+                            };
+
+                            const typeInterval = setInterval(typeText, 100);
+                        }
+                    }
+                };
+
+                buttonContainer.appendChild(button);
+            });
+
+            // Append the button container to the newDiv
+            newDiv.appendChild(buttonContainer);
+
+            // Insert the new div below the target element
+            targetElement.appendChild(newDiv);
+        }
+    });
+}
+
+
+// Ensure we are on LinkedIn
+// Ensure we are on LinkedIn
+
+if (window.location.hostname === "www.linkedin.com") {
+    console.log("LinkedIn detected");
+
+    const buttons = [
+        { emoji: "👍", text: "Positive", className: "custom-tone-positive" },
+        { emoji: "👎", text: "Negative", className: "custom-tone-negative" },
+        { emoji: "🤝", text: "Supportive", className: "custom-tone-supportive" },
+        { emoji: "🎉", text: "Enthusiastic", className: "custom-tone-enthusiastic" }
+    ];
+
+    function insertButtonsBelowCommentBox() {
+        const commentBoxes = document.querySelectorAll(".comments-comment-texteditor");
+
+        commentBoxes.forEach(commentBox => {
+            if (!commentBox.nextElementSibling || !commentBox.nextElementSibling.classList.contains("custom-comment-box")) {
+                const customDiv = document.createElement('div');
+                customDiv.className = "custom-comment-box";
+                customDiv.style.marginTop = "10px";
+                customDiv.style.padding = "10px";
+                customDiv.style.backgroundColor = "#f3f3f3";
+                customDiv.style.borderRadius = "5px";
+                customDiv.style.fontSize = "14px";
+                customDiv.style.display = "flex";
+                customDiv.style.flexWrap = "wrap";
+                customDiv.style.gap = "5px";
+
                 buttons.forEach(({ emoji, text, className }) => {
                     const button = document.createElement("button");
-                    button.className = className;
-                    button.innerHTML = `<span>${emoji}</span> <span>${text}</span>`;
-                    button.style.padding = "6px 12px";
-                    button.style.color = " #1d9bef";
-                    button.style.border = "1px solid black";
+                    button.className = `tone-button ${className}`;
+                    button.textContent = `${emoji} ${text}`;
+                    button.style.padding = "5px 10px";
+                    button.style.border = "none";
                     button.style.borderRadius = "5px";
                     button.style.cursor = "pointer";
-                    button.style.backgroundColor = "#FFFFFF";
-                    button.style.fontSize = "14px";
+                    button.style.fontSize = "12px";
+                    button.style.backgroundColor = "#ffffff";
+                    button.style.boxShadow = "0px 1px 3px rgba(0, 0, 0, 0.2)";
 
-                    // Add the click event
-                    // Add this to your button click event handler
-                    button.onclick = () => {
-                        // Find the tweet text input container
-                        const tweetContainer = document.querySelector('div[data-testid="tweetTextarea_0RichTextInputContainer"]');
-                    
-                        if (tweetContainer) {
-                            // Find the placeholder and hide it
-                            const placeholder = tweetContainer.querySelector('.public-DraftEditorPlaceholder-root');
-                            if (placeholder) {
-                                placeholder.style.display = 'none';
-                            }
-                    
-                            // Check if there's an existing <br> element that Twitter uses for empty input
-                            const brElement = tweetContainer.querySelector('br[data-text="true"]');
-                    
-                            if (brElement) {
-                                // Define the message to type
-                                const message = text_twitter;
-                                let index = 0;
-                    
-                                // Function to simulate typing
-                                const typeText = () => {
-                                    const currentBr = tweetContainer.querySelector('br[data-text="true"]');
-                                    
-                                    if (currentBr) {
-                                        const newSpan = document.createElement('span');
-                                        newSpan.setAttribute('data-text', 'true');
-                                        newSpan.setAttribute('contenteditable', 'true'); // Make it editable
-                                        currentBr.replaceWith(newSpan);
-                                        newSpan.focus();
-                                    }
-                    
-                                    const spanElement = tweetContainer.querySelector('span[data-text="true"]');
-                    
-                                    if (spanElement && index < message.length) {
-                                        spanElement.innerText += message.charAt(index);
-                                        index++;
-                                    } else if (index >= message.length) {
-                                        clearInterval(typeInterval);
-                                        spanElement.focus();
-                    
-                                        // Allow user to edit text
-                                        spanElement.addEventListener('input', () => {
-                                            if (spanElement.innerText.trim() === '') {
-                                                placeholder.style.display = 'block'; // Show placeholder if empty
-                                            } else {
-                                                placeholder.style.display = 'none'; // Hide placeholder when text is present
-                                            }
-                                        });
-                    
-                                        // Add focus/blur behavior for styling
-                                        spanElement.addEventListener('focus', () => {
-                                            placeholder.classList.add('public-DraftEditorPlaceholder-root-hasFocus');
-                                        });
-                    
-                                        spanElement.addEventListener('blur', () => {
-                                            placeholder.classList.remove('public-DraftEditorPlaceholder-root-hasFocus');
-                                        });
-                                    }
-                                };
-                    
-                                // Start typing effect
-                                const typeInterval = setInterval(typeText, 100);
+                    // Add event listener for inserting text into the correct comment box
+                    button.addEventListener("click", function () {
+                        const postContainer = commentBox.closest(".feed-shared-update-v2");
+                        if (postContainer) {
+                            const postTextElement = postContainer.querySelector(".update-components-text span.break-words");
+                            if (postTextElement) {
+                                // Get the post text
+                                const postText = `${postTextElement.innerText}`;
+
+                                // Insert text into the comment box properly
+                                commentBox.focus();
+                                document.execCommand("insertText", false, postText);
+
+                                // Trigger change event (simulate typing)
+                                commentBox.dispatchEvent(new Event('input', { bubbles: true }));
+                                commentBox.dispatchEvent(new Event('keydown', { bubbles: true }));
+                                commentBox.dispatchEvent(new Event('keyup', { bubbles: true }));
+
+                            } else {
+                                console.warn("Post text not found.");
                             }
                         }
-                    };
-                    
-                    
-                    
-                    
+                    });
 
-
-                    buttonContainer.appendChild(button);
+                    customDiv.appendChild(button);
                 });
 
-                // Append the button container to the "Hello" div
-                newDiv.appendChild(buttonContainer);
-
-                // Insert the new div **below** the target element
-                targetElement.appendChild(newDiv);
+                commentBox.parentNode.insertBefore(customDiv, commentBox.nextSibling);
             }
         });
     }
+
+    // Observe the DOM for new comment boxes
+    const observer = new MutationObserver(() => {
+        insertButtonsBelowCommentBox();
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    insertButtonsBelowCommentBox();
+}
+
+
+if (window.location.hostname === "www.reddit.com") {
+    console.log("Reddit detected");
+
+    function addButtonsBelowCommentLoader() {
+        const commentComposer = document.querySelector('shreddit-async-loader[bundlename="comment_composer"]');
+
+        if (commentComposer && !commentComposer.dataset.buttonsAdded) {
+            // Create a new div for buttons
+            let buttonContainer = document.createElement("div");
+            buttonContainer.style.display = "flex";
+            buttonContainer.style.marginTop = "5px";
+            buttonContainer.style.gap = "10px"; // Space between buttons
+
+            // Define buttons and their respective text
+            const buttons = [
+                { emoji: "👍", text: "Positive", className: "custom-tone-positive", insertText: "hiiiiiii" },
+                { emoji: "👎", text: "Negative", className: "custom-tone-negative", insertText: "I disagree with this point, here's why..." },
+                { emoji: "🤝", text: "Supportive", className: "custom-tone-supportive", insertText: "I'm here for you! Stay strong! 💪" },
+                { emoji: "🎉", text: "Enthusiastic", className: "custom-tone-enthusiastic", insertText: "This is amazing! 🎉🔥" }
+            ];
+
+            // Create and append buttons
+            buttons.forEach(({ emoji, text, className, insertText }) => {
+                let button = document.createElement("button");
+                button.innerHTML = `${emoji} ${text}`;
+                button.className = className;
+                button.style.padding = "5px 10px";
+                button.style.border = "1px solid #ccc";
+                button.style.borderRadius = "5px";
+                button.style.cursor = "pointer";
+                button.style.backgroundColor = "#f8f9fa";
+                button.style.fontSize = "14px";
+
+                // Optional: Add hover effect
+                button.onmouseover = () => (button.style.backgroundColor = "#e0e0e0");
+                button.onmouseout = () => (button.style.backgroundColor = "#f8f9fa");
+
+                // Add click event to insert text into Reddit's comment box
+                button.addEventListener("click", () => {
+                    const commentBox = document.querySelector('div[slot="rte"][contenteditable="true"]'); // Locate the comment box
+                    
+                    if (commentBox) {
+                        commentBox.focus(); // Focus on the comment box
+
+                        let pTag = commentBox.querySelector("p");
+                        pTag.setAttribute("dir", "ltr")
+
+                        if (pTag) {
+                            let brTag = pTag.querySelector("br");
+                            
+
+                            if (brTag) {
+                                // Replace <br> with a span element
+                                let span = document.createElement("span");
+                                span.setAttribute("data-lexical-text", "true");
+                                span.textContent = insertText;
+                                pTag.innerHTML = ""; // Clear existing content
+                                pTag.appendChild(span); // Insert new text
+                            } else {
+                                // If no <br>, just append text inside the existing p
+                                let span = document.createElement("span");
+                                span.setAttribute("data-lexical-text", "true");
+                                span.textContent = insertText;
+                                pTag.appendChild(span);
+                            }
+                        }
+                    } else {
+                        console.warn("Reddit comment box not found.");
+                    }
+                });
+
+                buttonContainer.appendChild(button);
+            });
+
+            // Insert the button container below the comment loader
+            commentComposer.after(buttonContainer);
+
+            // Mark as processed to avoid duplication
+            commentComposer.dataset.buttonsAdded = "true";
+
+            console.log("Added buttons below comment composer loader.");
+        }
+    }
+
+    // Observe the DOM for changes to detect the loader dynamically
+    const observer = new MutationObserver(() => {
+        addButtonsBelowCommentLoader();
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    // Initial check
+    addButtonsBelowCommentLoader();
+}
+
+
+
+
+
 
 
 
